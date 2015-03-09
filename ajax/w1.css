@@ -1,0 +1,9 @@
+input[type='submit']{
+	position:absolute;
+	padding:5px;
+	background:#ccc;
+	border-radius: 5px;
+	left:100px;
+	top:40px;
+}
+

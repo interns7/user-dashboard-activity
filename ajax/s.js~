@@ -1,0 +1,82 @@
+var http = require('http');
+var express = require('express');
+var path  = require('path');
+//var app = express.createServer();
+
+
+var app = express();
+app.set('port',process.env.PORT || 3031);
+app.use(express.bodyParser());
+
+
+function parseCookies(request){
+	var list = {},
+	           rc = request.headers.cookie;
+	   /* rc && rc.split(';').forEach(function( cookie ){
+			    var parts = cookie.split('=');
+			           list[parts.shift().trim()] = decodeURI(parts.join('='));
+				   });*/
+	    return rc;
+}
+
+
+
+
+
+
+
+app.get('/',function(req,res){
+  res.sendfile("client.html");
+});
+
+
+
+
+app.post('/endpoint', function(req, res){
+	var obj = {};
+	s = JSON.stringify(req.body);
+	console.log('body-virendra: ' + JSON.stringify(req.body));
+	res.send(req.body);
+        
+
+        var cookies = parseCookies(req);
+	console.log(cookies);
+
+
+
+/*var options = {
+		hostname : "localhost",
+	      //port: "8080",
+	        path : '/userservice/data/v1/entity/user/who-am-i',
+     	        mathod :'Get',
+
+
+	headers : {
+ 		'Cookie' : cookies
+ 		}
+ 	};
+   
+        //console.log('hello-virendra:' + JSON.stringify(req.body));
+
+
+http.get(options,function(resp){
+	console.log("statusCode: ",resp.statusCode);
+	console.log("headers :" , resp.headers);
+	resp.on('data',function(d){
+		res.write(d);
+		});
+	resp.on('end',function(){
+		res.end();
+		});
+	});*/
+
+
+});
+
+
+
+
+http.createServer(app).listen(app.get('port'),function(){
+		console.log('Express server listening on port' + app.get('port'))
+		});
+

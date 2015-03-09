@@ -1,0 +1,46 @@
+<html>
+	<head>
+		<title>jsonp test</title>
+		<script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>		
+	</head>
+   
+    <body>
+
+        EMAIL <input type="TEXT" id="user" size="40"><br>
+        
+        
+        <div id="select_div"><a href="endpoint" id="select_link">Test</a></div>
+        
+        <script type="text/javascript">
+            $(function(){				
+                $('#select_link').click(function(e){
+                    e.preventDefault();
+                    console.log('select_link clicked');
+
+                    var email;
+					email=$("#user").val();
+
+					console.log(email);
+
+					var data = {};
+					data.email = email;
+					//data.message = pass;
+					console.log(data);
+
+					$.ajax({
+						type: 'POST',
+						data: JSON.stringify(data),
+				        	contentType: 'application/json',
+                        	url: 'http://localhost:3035/endpoint',						
+                        	success: function(data) {
+                            				console.log('success');
+                            				console.log(JSON.stringify(data));
+                        }
+                    });
+
+				
+                });				
+            });
+        </script>    
+    </body>
+</html>
