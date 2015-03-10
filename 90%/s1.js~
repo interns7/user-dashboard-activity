@@ -1,0 +1,98 @@
+var http = require('http');
+var express = require('express');
+var path  = require('path');
+
+
+
+var app = express();
+app.set('port',process.env.PORT || 3035);
+
+app.use(express.bodyParser());
+
+app.use(express.static(path.join(__dirname, 'src'), {
+maxAge: 31557600000
+}));
+
+function parseCookies(request){
+	var list = {},
+	           rc = request.headers.cookie;
+	   /* rc && rc.split(';').forEach(function( cookie ){
+			    var parts = cookie.split('=');
+			           list[parts.shift().trim()] = decodeURI(parts.join('='));
+				   });*/
+	    return rc;
+}
+
+
+
+
+
+app.get('/', function(req, res){
+  // The form's action is '/' and its method is 'POST',
+  // so the `app.post('/', ...` route will receive the
+  // result of our form
+  var html = '<form action="/" method="post">' +
+               'Email:' +
+               '<input type="text" name="userName" placeholder="..." />' +
+               '<br>' +
+                '<button type="submit">Submit</button>' +
+            '</form>';
+               
+  res.send(html);
+  res.sendfile("index.html");
+});
+
+
+app.post('/', function(req, res){
+  var userName = req.body.userName;
+  //var html = 'Hello: ' + userName + '.<br>' +
+            // '<a href="/">Try again.</a>';
+var cookies = parseCookies(req);
+	console.log(cookies);
+
+
+var options = {
+		hostname : "localhost",
+	      //port: "8080",
+	        //path : '/userservice/data/v1/entity/user/who-am-i',
+	       // path : '/app/v1/user/journey?email=siddharthgupta25@gmail.com',
+	        path : '/app/v1/user/journey?email='+ userName,
+     	    mathod :'Get',
+     	    
+
+
+	headers : {
+ 		'Cookie' : cookies
+ 		}
+ 	};
+   
+
+http.get(options,function(resp){
+	console.log("statusCode: ",resp.statusCode);
+	console.log("headers :" , resp.headers);
+	resp.on('data',function(d){
+		res.write(d);
+		var s = JSON.parse(d);
+		console.log("d--->" + "  " + s.data[0].eventType.displayName);	
+		});
+	    resp.on('end',function(){
+		res.end();
+		});
+	});
+
+
+
+
+ // res.send(html);
+});
+
+
+/*app.get('/e1',function(req,res){
+  res.sendfile("index.html");
+});*/
+
+
+http.createServer(app).listen(app.get('port'),function(){
+		console.log('Express server listening on port' + app.get('port'))
+		});
+
